@@ -97,11 +97,11 @@ def Test(dataset: Data, model, device, topK, flag_multicore, test_batch_size):
         enum_list = zip(rating_list, ground_true_list)
 
         if flag_multicore == 1:
-            results = pool.map(test_one_batch, enum_list)
+            results = pool.map(test_one_batch, enum_list, topK)
         else:
             results = []
             for single_list in enum_list:
-                results.append(test_one_batch(single_list))
+                results.append(test_one_batch(single_list, topK))
         for result in results:
             model_results['recall'] += result['recall']
             model_results['precision'] += result['precision']
@@ -116,13 +116,12 @@ def Test(dataset: Data, model, device, topK, flag_multicore, test_batch_size):
 
         return model_results
 
-def test_one_batch(X):
+def test_one_batch(X, top_k):
     recommender_items = X[0].numpy()
     ground_true_items = X[1]
     r = utility.metrics.get_label(ground_true_items, recommender_items)
     precision, recall, ndcg = [], [], []
-    top_K = [20, 40, 60]
-    for k_size in top_K:
+    for k_size in top_k:
         recall.append(utility.metrics.recall_at_k(r, k_size, ground_true_items))
         precision.append(utility.metrics.precision_at_k(r, k_size, ground_true_items))
         ndcg.append(utility.metrics.ndcg_at_k(r, k_size, ground_true_items))

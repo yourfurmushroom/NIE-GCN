@@ -153,6 +153,9 @@ class NIE_GCN(nn.Module):
 
         new_R = new_R / np.power(new_R.sum(axis=1), self.config.beta)
 
+        # Ensure new_R is a numpy array with float64 data type
+        new_R = new_R.toarray().astype(np.float64)
+
         new_R[np.isinf(new_R)] = 0.
 
         new_R = sp.csr_matrix(new_R)
