@@ -38,7 +38,7 @@ def split_data_by_edges(input_file, train_file, test_file, train_ratio=0.9):
         file.writelines(test_lines)
 
 if __name__ == "__main__":
-    input_file = 'user_to_restaurant_0.9.txt'
-    train_file = 'Data/food/train.txt'
-    test_file = 'Data/food/test.txt'
-    split_data_by_edges(input_file, train_file, test_file, train_ratio=0.5)
+    input_file = 'user_to_restaurant_NEW/user_to_restaurant_NEW_1.0.txt'
+    train_file = 'Data/ratio_1.0/train.txt'
+    test_file = 'Data/ratio_1.0/test.txt'
+    split_data_by_edges(input_file, train_file, test_file, train_ratio=0.8)

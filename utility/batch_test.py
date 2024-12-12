@@ -51,7 +51,7 @@ def mini_batch(*tensors, **kwargs):
             yield tuple(x[i:i + batch_size] for x in tensors)
 
 
-def Test(dataset: Data, model, device, topK, flag_multicore, test_batch_size):
+def Test(dataset: Data, model, device, topK, flag_multicore, test_batch_size, return_recommendations=False):
     model = model.eval()
     if flag_multicore == 1:
         multicore = multiprocessing.cpu_count() // 2
@@ -59,9 +59,10 @@ def Test(dataset: Data, model, device, topK, flag_multicore, test_batch_size):
 
     # top-20, 40, ..., 100
     model_results = {'precision': np.zeros(len(topK)),
-               'recall': np.zeros(len(topK)),
-               'hit': np.zeros(len(topK)),
-               'ndcg': np.zeros(len(topK))}
+                     'recall': np.zeros(len(topK)),
+                     'hit': np.zeros(len(topK)),
+                     'ndcg': np.zeros(len(topK))}
+    recommended_items = {}
     with torch.no_grad():
         users = list(dataset.test_dict.keys())  # get user list to test
         if test_batch_size > len(users) // 10:
@@ -86,7 +87,6 @@ def Test(dataset: Data, model, device, topK, flag_multicore, test_batch_size):
 
             # get the top-K recommended list for all users
             _, rating_k = torch.topk(rating, k=max(topK))
-
             rating = rating.cpu()
             del rating
             users_list.append(batch_users)
@@ -111,10 +111,18 @@ def Test(dataset: Data, model, device, topK, flag_multicore, test_batch_size):
         model_results['precision'] /= float(len(users))
         model_results['ndcg'] /= float(len(users))
 
+        if return_recommendations:
+            for i, batch_users in enumerate(users_list):
+                for j, user in enumerate(batch_users):
+                    recommended_items[user] = rating_list[i][j].tolist()
+
         if flag_multicore == 1:
             pool.close()
 
-        return model_results
+        if return_recommendations:
+            return model_results, recommended_items
+        else:
+            return model_results
 
 def test_one_batch(X, top_k):
     recommender_items = X[0].numpy()

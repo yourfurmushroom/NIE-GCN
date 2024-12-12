@@ -1,0 +1,34 @@
+num_users: 47
+num_items: 174
+num_nodes: 221
+num_train: 638
+num_test: 182
+sparisty: 0.8997309855710443
+
+num_users: 47
+num_items: 174
+num_nodes: 221
+num_train: 748
+num_test: 209
+sparisty: 0.8829787234042553
+
+num_users: 47
+num_items: 174
+num_nodes: 221
+num_train: 870
+num_test: 245
+sparisty: 0.8636585962337979
+
+num_users: 47
+num_items: 174
+num_nodes: 221
+num_train: 990
+num_test: 269
+sparisty: 0.8460503790657863
+
+num_users: 47
+num_items: 174
+num_nodes: 221
+num_train: 1094
+num_test: 295
+sparisty: 0.8301540719002201
